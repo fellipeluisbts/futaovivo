@@ -10,7 +10,7 @@ app.commandLine.appendSwitch('enable-features', 'PlatformHEVCDecoderSupport,UseC
 
 const MAX_TABS = 9;
 const HOME_URL = 'https://www.google.com';
-const CHROME_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
+const CHROME_USER_AGENT = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`;
 let mainWindow;
 let tabs = [];
 let activeTabId = null;
