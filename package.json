@@ -9,7 +9,7 @@
     "dist:win": "electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "^38.1.0",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v44.1.0+wvcus",
     "electron-builder": "^26.0.12"
   },
   "dependencies": {
@@ -38,7 +38,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
