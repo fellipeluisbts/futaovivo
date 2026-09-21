@@ -5,12 +5,50 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "start:headless": "xvfb-run -a electron . --no-sandbox"
+    "start:headless": "xvfb-run -a electron . --no-sandbox",
+    "dist:win": "electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "^38.1.0"
+    "electron": "^38.1.0",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "adm-zip": "^0.6.1"
+  },
+  "build": {
+    "appId": "com.futaovivo.browser",
+    "productName": "Futao Vivo Browser",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "overlay.js",
+      "overlay.html",
+      "overlay.css",
+      "index.html",
+      "settings.html",
+      "styles.css",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Futao Vivo Browser"
+    }
   }
 }
