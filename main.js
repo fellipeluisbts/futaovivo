@@ -5,6 +5,9 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+app.commandLine.appendSwitch('enable-features', 'PlatformHEVCDecoderSupport,UseChromeOSDirectVideoDecoder');
+
 const MAX_TABS = 9;
 const HOME_URL = 'https://www.google.com';
 let mainWindow;
@@ -21,6 +24,13 @@ let installedExtensions = [];
 
 function getBrowserSession() {
   return session.fromPartition('persist:browser');
+}
+
+function configureMediaSession(browserSession) {
+  browserSession.setPermissionRequestHandler((_webContents, permission, callback) => {
+    callback(['media', 'fullscreen', 'notifications'].includes(permission));
+  });
+  browserSession.setPermissionCheckHandler((_webContents, permission) => ['media', 'fullscreen', 'notifications'].includes(permission));
 }
 
 function getActiveTab() {
@@ -73,10 +83,17 @@ function createTab(url = HOME_URL, options = {}) {
       webPreferences: {
         contextIsolation: true,
         sandbox: true,
+        plugins: true,
+        autoplayPolicy: 'no-user-gesture-required',
+        enableBlinkFeatures: 'EncryptedMedia',
         partition: options.partition || 'persist:browser'
       }
     })
   };
+
+  const browserSession = tab.view.webContents.session;
+  configureMediaSession(browserSession);
+  tab.view.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
 
   tab.view.webContents.setWindowOpenHandler(({ url: targetUrl }) => {
     createTab(targetUrl);
