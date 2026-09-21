@@ -10,6 +10,7 @@ app.commandLine.appendSwitch('enable-features', 'PlatformHEVCDecoderSupport,UseC
 
 const MAX_TABS = 9;
 const HOME_URL = 'https://www.google.com';
+const CHROME_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36';
 let mainWindow;
 let tabs = [];
 let activeTabId = null;
@@ -93,7 +94,7 @@ function createTab(url = HOME_URL, options = {}) {
 
   const browserSession = tab.view.webContents.session;
   configureMediaSession(browserSession);
-  tab.view.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
+  tab.view.webContents.setUserAgent(CHROME_USER_AGENT);
 
   tab.view.webContents.setWindowOpenHandler(({ url: targetUrl }) => {
     createTab(targetUrl);
@@ -138,7 +139,7 @@ function createTab(url = HOME_URL, options = {}) {
   if (!tab.settings) tileSelection.add(tab.id);
   if (!activeTabId) activeTabId = tab.id;
   if (options.settings) tab.view.webContents.loadFile(url);
-  else tab.view.webContents.loadURL(url);
+  else tab.view.webContents.loadURL(url, { userAgent: CHROME_USER_AGENT });
   refreshBounds();
   sendState();
   return tab;
@@ -303,6 +304,10 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+  const browserSession = getBrowserSession();
+  browserSession.setUserAgent(CHROME_USER_AGENT);
+  session.defaultSession.setUserAgent(CHROME_USER_AGENT);
+  configureMediaSession(browserSession);
   await restoreInstalledExtensions();
   createWindow();
   ipcMain.on('browser:navigate', (_event, value) => navigate(value));
